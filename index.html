@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dice Game</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .dice-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .dice-wrapper {
+      text-align: center;
+    }
+    .dice {
+      width: 100px;
+      height: 100px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: 10px;
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      margin-bottom: 10px;
+    }
+    .dice-1 {
+      background-image: url('dice1.png');
+    }
+    .dice-2 {
+      background-image: url('dice2.png');
+    }
+    .dice-3 {
+      background-image: url('dice3.png');
+    }
+    .dice-4 {
+      background-image: url('dice4.png');
+    }
+    .dice-5 {
+      background-image: url('dice5.png');
+    }
+    .dice-6 {
+      background-image: url('dice6.png');
+    }
+    button {
+      background-color: #ff5722;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #ff7043;
+    }
+    .player-label {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    #playerScore1, #playerScore2 {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    #winnerAnnouncement {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .game-title {
+      font-size: 36px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dice-container">
+    <div class="dice-wrapper">
+      <div class="player-label">Player 1</div>
+      <div class="dice dice-1" id="player1Dice"></div>
+    </div>
+    <div class="game-title">Dice Game</div>
+    <div class="dice-wrapper">
+      <div class="player-label">Player 2</div>
+      <div class="dice dice-2" id="player2Dice"></div>
+    </div>
+  </div>
+  <button id="rollButton">Roll</button>
+  <div id="playerScore1">Score: 0</div>
+  <div id="playerScore2">Score: 0</div>
+  <div id="winnerAnnouncement"></div>
+  <script>
+    const dice = {
+      sides: 6,
+      roll: function () {
+        return Math.floor(Math.random() * this.sides) + 1;
+      }
+    };
+
+    let currentPlayer = '1';
+    let playerScores = { '1': 0, '2': 0 };
+    const targetScore = 20; // Change this to set the target score
+
+    function printNumber(number, playerName) {
+      const playerDice = document.getElementById('player' + playerName + 'Dice');
+      playerDice.className = 'dice dice-' + number;
+    }
+
+    function updateScore(playerName, score) {
+      playerScores[playerName] += score;
+      const playerScoreElement = document.getElementById('playerScore' + playerName);
+      playerScoreElement.textContent = 'Score: ' + playerScores[playerName];
+      checkWinner();
+    }
+
+    function rollDice() {
+      const result = dice.roll();
+      printNumber(result, currentPlayer);
+      const scoreDifference = Math.abs(result - dice.roll());
+      updateScore(currentPlayer, scoreDifference);
+      currentPlayer = currentPlayer === '1' ? '2' : '1'; // Switch player
+    }
+
+    function checkWinner() {
+      const winnerAnnouncement = document.getElementById('winnerAnnouncement');
+      for (let playerName in playerScores) {
+        if (playerScores[playerName] >= targetScore) {
+          winnerAnnouncement.textContent = 'Player ' + playerName + ' wins!';
+          disableButton();
+          break;
+        }
+      }
+    }
+
+    function disableButton() {
+      document.getElementById('rollButton').disabled = true;
+    }
+
+    document.getElementById('rollButton').addEventListener('click', rollDice);
+  </script>
+</body>
+</html>
